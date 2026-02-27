@@ -46,6 +46,7 @@ def normalize_db_url(url: str) -> str:
 
 class Config:
     SECRET_KEY = env_str("SECRET_KEY", "dev-secret")
+    ADMIN_PASSWORD = env_str("ADMIN_PASSWORD", "admin")
     SQLALCHEMY_DATABASE_URI = normalize_db_url(env_str("DATABASE_URL", "sqlite:///./instance/app.db"))
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 

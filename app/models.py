@@ -87,3 +87,10 @@ class PriceRule(db.Model):
     color_a3 = db.Column(db.Float, nullable=False, default=0.0)
 
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+
+class Setting(db.Model):
+    __tablename__ = "settings"
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(120), nullable=False, unique=True)
+    value = db.Column(db.Text, nullable=True)

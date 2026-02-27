@@ -1,17 +1,102 @@
 from datetime import datetime
-from flask import Blueprint, jsonify, request, render_template
+from functools import wraps
+from flask import Blueprint, jsonify, request, render_template, session, redirect
+from werkzeug.security import check_password_hash, generate_password_hash
+
 from app import db
-from app.models import Order, PriceRule
+from app.models import Order, PriceRule, Setting
 from app.price_rules import ensure_price_rules
+from flask import current_app
 
 bp = Blueprint("admin", __name__)
 
+def _get_setting(key: str) -> str | None:
+    s = Setting.query.filter_by(key=key).first()
+    return s.value if s else None
+
+def _set_setting(key: str, value: str | None):
+    s = Setting.query.filter_by(key=key).first()
+    if not s:
+        s = Setting(key=key, value=value)
+        db.session.add(s)
+    else:
+        s.value = value
+    db.session.commit()
+
+def ensure_admin_password():
+    """Create default admin password hash on first boot."""
+    h = _get_setting("admin_password_hash")
+    if h:
+        return
+    default_pw = getattr(current_app.config, "ADMIN_PASSWORD", None) or current_app.config.get("ADMIN_PASSWORD") or "admin"
+    _set_setting("admin_password_hash", generate_password_hash(default_pw))
+
+def require_admin(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        ensure_admin_password()
+        if session.get("is_admin") is True:
+            return fn(*args, **kwargs)
+        # API endpoints return JSON
+        if request.path.startswith("/api/"):
+            return jsonify({"ok": False, "error": "unauthorized"}), 401
+        return redirect("/admin/login?next=" + (request.full_path or request.path))
+    return wrapper
+
+@bp.get("/admin/login")
+def admin_login_page():
+    ensure_admin_password()
+    nxt = request.args.get("next") or "/admin"
+    return render_template("admin_login.html", next=nxt, error=None, msg=None)
+
+@bp.post("/admin/login")
+def admin_login_post():
+    ensure_admin_password()
+    pw = (request.form.get("password") or "").strip()
+    nxt = (request.form.get("next") or "").strip() or "/admin"
+    h = _get_setting("admin_password_hash") or ""
+    if pw and h and check_password_hash(h, pw):
+        session["is_admin"] = True
+        return redirect(nxt)
+    return render_template("admin_login.html", next=nxt, error="Şifre hatalı.", msg=None)
+
+@bp.get("/admin/logout")
+def admin_logout():
+    session.pop("is_admin", None)
+    return redirect("/")
+
+@bp.get("/admin/password")
+@require_admin
+def admin_password_page():
+    return render_template("admin_password.html", error=None, msg=None)
+
+@bp.post("/admin/password")
+@require_admin
+def admin_password_post():
+    old_pw = (request.form.get("old_password") or "").strip()
+    new_pw = (request.form.get("new_password") or "").strip()
+    new_pw2 = (request.form.get("new_password2") or "").strip()
+
+    if not new_pw or len(new_pw) < 4:
+        return render_template("admin_password.html", error="Yeni şifre en az 4 karakter olmalı.", msg=None)
+    if new_pw != new_pw2:
+        return render_template("admin_password.html", error="Yeni şifreler eşleşmiyor.", msg=None)
+
+    h = _get_setting("admin_password_hash") or ""
+    if not check_password_hash(h, old_pw):
+        return render_template("admin_password.html", error="Mevcut şifre yanlış.", msg=None)
+
+    _set_setting("admin_password_hash", generate_password_hash(new_pw))
+    return render_template("admin_password.html", error=None, msg="Şifre güncellendi ✅")
+
 @bp.get("/admin")
+@require_admin
 def admin_page():
     return render_template("admin.html")
 
 
 @bp.get("/admin/prices")
+@require_admin
 def admin_prices_page():
     # Make sure defaults exist
     ensure_price_rules()
@@ -19,6 +104,7 @@ def admin_prices_page():
 
 
 @bp.get("/api/admin/pricerules")
+@require_admin
 def admin_get_pricerules():
     ensure_price_rules()
     rules = PriceRule.query.order_by(PriceRule.id.asc()).all()
@@ -39,6 +125,7 @@ def admin_get_pricerules():
 
 
 @bp.post("/api/admin/pricerules")
+@require_admin
 def admin_update_pricerules():
     ensure_price_rules()
     data = request.get_json(force=True, silent=True) or {}
@@ -72,6 +159,7 @@ def admin_update_pricerules():
     return jsonify({"ok": True})
 
 @bp.get("/api/admin/orders")
+@require_admin
 def admin_orders():
     status = request.args.get("status")
     q = Order.query
@@ -94,6 +182,7 @@ def admin_orders():
     } for o in orders]})
 
 @bp.get("/api/admin/order/<int:order_id>")
+@require_admin
 def admin_order_detail(order_id: int):
     o = Order.query.get_or_404(order_id)
     return jsonify({"ok": True, "order": {
@@ -132,6 +221,7 @@ def admin_order_detail(order_id: int):
     } for f in o.files]})
 
 @bp.post("/api/admin/order/<int:order_id>/update")
+@require_admin
 def admin_update(order_id: int):
     o = Order.query.get_or_404(order_id)
     data = request.get_json(force=True, silent=True) or {}

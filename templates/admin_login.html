@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Giriş | SentezCopy</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body class="admin">
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <img class="brand-logo" src="/static/img/sentez-mascot.png" alt="Sentez mascot">
+        </div>
+        <div class="brand-text">
+          <div class="brand-title">Admin Panel</div>
+          <div class="brand-sub">Giriş yap</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a class="pill" href="/">Siteye dön</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container" style="max-width:520px">
+      <div class="card pad">
+        <h2 style="margin-top:0">Admin Şifresi</h2>
+        {% if error %}
+          <div class="note warn" style="margin:10px 0">{{ error }}</div>
+        {% endif %}
+        {% if msg %}
+          <div class="note ok" style="margin:10px 0">{{ msg }}</div>
+        {% endif %}
+
+        <form method="post" action="/admin/login">
+          <input type="hidden" name="next" value="{{ next or '' }}">
+          <label class="lbl">Şifre</label>
+          <input class="input" type="password" name="password" placeholder="••••••••" required>
+          <div style="height:10px"></div>
+          <button class="btn primary" type="submit">Giriş Yap</button>
+        </form>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
