@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Teslimat ve İade | SentezCopy</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <div class="legal-wrap">
+    <div class="legal-top">
+      <div class="brand" style="gap:10px;">
+        <div class="brand-mark" aria-hidden="true" style="width:38px;height:38px;">
+          <img class="brand-logo" src="/static/img/sentez-mascot.png" alt="SentezCopy" />
+        </div>
+        <div>
+          <div style="font-weight:1000;">SentezCopy</div>
+          <div class="legal-muted">Teslimat, iade ve iptal koşulları</div>
+        </div>
+      </div>
+      <a href="/">← Ana sayfa</a>
+    </div>
+
+    <div class="legal-card">
+      <h1>Teslimat ve İade</h1>
+      <p class="legal-muted">Aşağıdaki maddeler genel bilgilendirmedir. Duruma göre operasyonel güncellemeler yapılabilir.</p>
+
+      <h2>1) Teslimat seçenekleri</h2>
+      <ul>
+        <li><b>Mağaza teslimi:</b> Sipariş hazır olduğunda teslim alabilirsiniz.</li>
+        <li><b>Kargo:</b> Siparişiniz hazırlanıp kargo firmasına teslim edilir. Teslim süresi bölgeye göre değişir.</li>
+      </ul>
+
+      <h2>2) Hazırlık süresi</h2>
+      <p>
+        Baskı hazırlık süresi; dosya yoğunluğu, seçilen ürün ve iş sırasına göre değişebilir. Acil işler için not ekleyebilir
+        veya bizimle iletişime geçebilirsiniz.
+      </p>
+
+      <h2>3) Kargo ücreti</h2>
+      <p>
+        Kargo ücreti (varsa) ödeme özetinde ayrıca gösterilir. Kampanya veya ücretsiz kargo eşiği gibi koşullar aktifse
+        sistem otomatik uygular.
+      </p>
+
+      <h2>4) İptal ve değişiklik</h2>
+      <p>
+        Üretim başlamadan önce iptal veya değişiklik talebinizi mümkünse değerlendiririz. Üretim başladıktan sonra,
+        kişiye özel üretim niteliği nedeniyle iptal/değişiklik her zaman mümkün olmayabilir.
+      </p>
+
+      <h2>5) İade ve yeniden basım</h2>
+      <ul>
+        <li><b>Hasarlı teslimat:</b> Kargo kaynaklı hasar durumunda, kargo tutanağı/fotoğraf ile bize iletin.</li>
+        <li><b>Üretim hatası:</b> Bizden kaynaklı baskı hatalarında yeniden basım veya çözüm sunarız.</li>
+        <li><b>Dosya/ayar hatası:</b> Yüklenen dosya veya seçilen ayarlardan kaynaklı durumlarda iade koşulları sınırlı olabilir.</li>
+      </ul>
+
+      <h2>6) Destek</h2>
+      <p>
+        Sipariş numaranızla birlikte bize yazarsanız daha hızlı yardımcı oluruz.
+      </p>
+    </div>
+
+    <footer class="site-footer" style="padding-left:0; padding-right:0;">
+      <div class="footer-inner">
+        <div class="footer-links">
+          <a href="/mesafeli-satis">Mesafeli Satış Bilgilendirmesi</a>
+          <span class="dot">•</span>
+          <a href="/gizlilik">Gizlilik ve KVKK</a>
+          <span class="dot">•</span>
+          <a href="/teslimat-iade">Teslimat ve İade</a>
+        </div>
+        <div class="footer-note">© <span id="footerYear"></span> SentezCopy</div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('footerYear').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

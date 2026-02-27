@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mesafeli Satış Bilgilendirmesi | SentezCopy</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <div class="legal-wrap">
+    <div class="legal-top">
+      <div class="brand" style="gap:10px;">
+        <div class="brand-mark" aria-hidden="true" style="width:38px;height:38px;">
+          <img class="brand-logo" src="/static/img/sentez-mascot.png" alt="SentezCopy" />
+        </div>
+        <div>
+          <div style="font-weight:1000;">SentezCopy</div>
+          <div class="legal-muted">Online fotokopi ve baskı hizmetleri</div>
+        </div>
+      </div>
+      <a href="/">← Ana sayfa</a>
+    </div>
+
+    <div class="legal-card">
+      <h1>Mesafeli Satış Bilgilendirmesi</h1>
+      <p class="legal-muted">Bu metin bilgilendirme amaçlıdır. Sipariş vermeden önce lütfen içerikleri okuyunuz.</p>
+
+      <h2>1) Hizmetin kapsamı</h2>
+      <p>
+        SentezCopy üzerinden yüklediğiniz dosyalar, seçtiğiniz baskı ayarlarına göre hazırlanır ve teslimat yönteminize göre
+        mağazadan teslim edilir veya kargoya verilir.
+      </p>
+
+      <h2>2) Sipariş adımları</h2>
+      <ul>
+        <li>Dosyanızı yükleyin ve ürün, kağıt ölçüsü, renk, tek/çift yüz, kağıt başına sayfa gibi seçenekleri belirleyin.</li>
+        <li>Sepete ekleyin, iletişim ve teslimat bilgilerini girin.</li>
+        <li>Sistem tarafından oluşturulan tutarı onaylayarak siparişi tamamlayın.</li>
+      </ul>
+
+      <h2>3) Fiyatlandırma</h2>
+      <p>
+        Ücret, seçilen ürün tipi ve baskı seçeneklerine göre hesaplanır. Kargo ücreti (varsa) ödeme özetinde ayrıca gösterilir.
+        Kampanya/indirimler geçerliyse toplam tutara otomatik yansır.
+      </p>
+
+      <h2>4) Üretim ve süre</h2>
+      <p>
+        Siparişiniz baskı planına alınır. Yoğunluğa göre hazırlık süresi değişebilir. Kargo seçiliyse teslim süresi kargo firmasına
+        ve bulunduğunuz lokasyona göre değişir.
+      </p>
+
+      <h2>5) Kişiye özel ürün ve cayma hakkı</h2>
+      <p>
+        Baskı hizmeti, dosyanız ve seçtiğiniz ayarlara göre kişiye özel üretim olduğundan; mevzuattaki istisnalar kapsamında,
+        cayma hakkı her sipariş türü için geçerli olmayabilir. Üretim başlamadan önce hata/iptal talepleri mümkünse değerlendirilir.
+      </p>
+
+      <h2>6) İletişim</h2>
+      <p>
+        Siparişle ilgili sorularınız için site üzerindeki iletişim kanallarını veya WhatsApp hattını kullanabilirsiniz.
+      </p>
+    </div>
+
+    <footer class="site-footer" style="padding-left:0; padding-right:0;">
+      <div class="footer-inner">
+        <div class="footer-links">
+          <a href="/mesafeli-satis">Mesafeli Satış Bilgilendirmesi</a>
+          <span class="dot">•</span>
+          <a href="/gizlilik">Gizlilik ve KVKK</a>
+          <span class="dot">•</span>
+          <a href="/teslimat-iade">Teslimat ve İade</a>
+        </div>
+        <div class="footer-note">© <span id="footerYear"></span> SentezCopy</div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById('footerYear').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

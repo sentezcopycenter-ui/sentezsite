@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SentezCopy | Online Fotokopi</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-bar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <img class="brand-logo" src="/static/img/sentez-mascot.png" alt="SentezCopy" loading="eager" />
+        </div>
+        <div class="brand-text">
+          <div class="brand-title">SentezCopy</div>
+          <div class="brand-sub">Online Fotokopi</div>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <div class="nav-right">
+          <a id="reviewBtn" class="pill ghost" href="#reviews">Bizi Değerlendirin</a>
+          <button id="trackBtn" class="pill" type="button">Sipariş Takip</button>
+          <a class="pill" href="/admin">Admin</a>
+          <button id="cartBtn" class="pill" type="button" title="Sepet">
+            Sepet <span id="cartCount" class="badge">0</span>
+          </button>
+        </div>
+      </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-left">
+          <div class="hero-title-row">
+            <h1><span class="accent">Online Fotokopi</span><br>sipariş ver</h1>
+            <img class="hero-side-photo" src="/static/img/ChatGPT_Image_21_ub_2026_23_44_10.png" alt="" aria-hidden="true" />
+          </div>
+
+          <p class="lead">
+            Dosyanı yükle, ayarlarını seç, sepeti oluştur. Siparişi hızlıca tamamla.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn ghost" href="#calc">Sipariş Ver</a>
+          </div>
+
+          <!-- Üstteki mini adım kartları kaldırıldı (mobilde gereksiz kalabalık yapıyordu) -->
+
+        </div><!-- /hero-left -->
+
+        <!-- RIGHT: boş alan yerine maskot (çerçevesiz) -->
+        <div class="hero-right" aria-hidden="true">
+          <img class="hero-mascot" src="/static/img/sentez-mascot.png" alt="" />
+        </div>
+      </div><!-- /hero-grid -->
+    </section>
+
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head center how-head">
+          <h2>Nasıl Çalışır?</h2>
+          <p>4 adımda siparişini tamamla.</p>
+        </div>
+
+        <div class="how4">
+          <div class="howcard">
+            <div class="howico green">👤➕</div>
+            <div class="howtitle">Hesap Oluşturun</div>
+            <div class="howtext">Dakikalar içerisinde bir hesap oluşturun veya giriş yapın</div>
+          </div>
+          <div class="howcard">
+            <div class="howico yellow">📤</div>
+            <div class="howtitle">Belgeyi Yükleyin</div>
+            <div class="howtext">Çıktı almak istediğiniz belgeyi veya belgelerinizi yükleyin</div>
+          </div>
+          <div class="howcard">
+            <div class="howico blue">📄</div>
+            <div class="howtitle">Özellikleri Seçin</div>
+            <div class="howtext">Yüklemiş olduğunuz belgenin çıktı özelliklerini belirleyin</div>
+          </div>
+          <div class="howcard">
+            <div class="howico red">✅</div>
+            <div class="howtitle">Sipariş Verin</div>
+            <div class="howtext">Teslimat türünü seçip sipariş verin ve gerisini bize bırakın</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+<section id="calc" class="section alt">
+  <div class="container">
+    <div class="section-head">
+      <h2>Sipariş Ver (Dosya Yükle)</h2>
+      <p>Yükle → seçenekleri belirle → sepet</p>
+    </div>
+
+    <div class="calc-grid">
+      <!-- LEFT: Calculator -->
+      <div class="card pad">
+        <div class="card-title">Dosya Yükle</div>
+
+        <div class="calc-panel">
+          <div id="drop" class="uploadbar" tabindex="0" role="button" aria-label="Dosya seç">
+            <div class="ub-ico">⬆️</div>
+            <div class="ub-mid">
+              <div class="ub-title" id="uploadTitle">Buraya tıkla, dosyanı seç ve yükle!</div>
+              <div class="ub-sub" id="uploadName"></div>
+            </div>
+            <button id="resetUpload" class="ub-reset" type="button">SIFIRLA</button>
+            <input id="file" type="file" class="ub-file" />
+          </div>
+
+          <!-- Paper Type -->
+          <div class="blk">
+            <div class="blk-head">
+              <div class="blk-title">Ürün Seçiniz <span class="blk-hint">(Tıkla Oku)</span></div>
+            </div>
+            <div class="tile-grid" id="paperTypeGrid">
+              <button class="tile segbtn active" data-ptype="80_1hamur" type="button">
+                <div class="t-top">80 gr</div><div class="t-bot">1. Hamur</div>
+              </button>
+              <button class="tile segbtn" data-ptype="240_1hamur" type="button">
+                <div class="t-top">240 gr</div><div class="t-bot">1. Hamur</div>
+              </button>
+              <button class="tile segbtn" data-ptype="sticker_parlak" type="button">
+                <div class="t-top">sticker</div><div class="t-bot">parlak</div>
+              </button>
+              <button class="tile segbtn" data-ptype="sticker_selefonlu" type="button">
+                <div class="t-top">sticker parlak</div><div class="t-bot">selefonlu</div>
+              </button>
+              <button class="tile segbtn" data-ptype="vesikalik" type="button">
+                <div class="t-top">Vesikalık</div><div class="t-bot">Fotoğraf</div>
+              </button>
+              <button class="tile segbtn" data-ptype="brosur" type="button">
+                <div class="t-top">Broşür</div><div class="t-bot">Baskı</div>
+              </button>
+              <button class="tile segbtn" data-ptype="sertifika_dokulu" type="button">
+                <div class="t-top">Sertifika</div><div class="t-bot">Dokulu</div>
+              </button>
+              <button class="tile segbtn" data-ptype="laminasyon" type="button">
+                <div class="t-top">Laminasyon</div><div class="t-bot">Kaplama</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Paper Size + Color -->
+          <div class="two-col">
+            <div class="blk">
+              <div class="blk-head">
+                <div class="blk-title">Kağıt Ölçüsü <span class="blk-hint">(Tıkla Oku)</span></div>
+              </div>
+              <select id="paperSelect" class="select">
+                <option value="A4" selected>A4</option>
+                <option value="A5">A5</option>
+                <option value="A3">A3</option>
+              </select>
+            </div>
+
+            <div class="blk">
+              <div class="blk-head">
+                <div class="blk-title">Renk Seçiniz <span class="info">i</span></div>
+              </div>
+              <div class="tile-row">
+                <button class="cardtile segbtn active" data-color="bw" type="button">
+                  <div class="ct-chip bw"></div><div class="ct-txt">S/B</div>
+                </button>
+                <button class="cardtile segbtn" data-color="color" type="button">
+                  <div class="ct-chip color"></div><div class="ct-txt">RENKLİ</div>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pages per sheet (N-up) -->
+          <div class="blk">
+            <div class="blk-head">
+              <div class="blk-title">Kağıt Başına Sayfa <span class="blk-hint">(Tıkla Oku)</span></div>
+            </div>
+            <div class="mini-row nup-row">
+              <button class="mini segbtn active" data-nup="1" type="button">1x1</button>
+              <button class="mini segbtn" data-nup="2" type="button">1x2</button>
+              <button class="mini segbtn" data-nup="4" type="button">1x4</button>
+              <button class="mini segbtn" data-nup="6" type="button">1x6</button>
+            </div>
+          </div>
+
+          <!-- Duplex -->
+          <div class="blk">
+            <div class="blk-head">
+              <div class="blk-title">Baskı Şekli <span class="blk-hint">(Tıkla Oku)</span></div>
+            </div>
+            <div class="tile-row">
+              <button class="cardtile segbtn active" data-duplex="single" type="button">
+                <div class="ct-tag">TEK YÜZ</div><div class="ct-ar">↓</div>
+              </button>
+              <button class="cardtile segbtn" data-duplex="double" type="button">
+                <div class="ct-tag">ÇİFT YÜZ</div><div class="ct-ar">⇅</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Binding -->
+          <div class="blk">
+            <div class="blk-head">
+              <div class="blk-title">Ciltleme Seçiniz <span class="blk-hint">(Tıkla Oku)</span></div>
+            </div>
+            <select id="binding" class="select">
+              <option value="none">İstemiyorum</option>
+              <option value="spiral">Spiral</option>
+              <option value="staple">Zımba</option>
+            </select>
+          </div>
+
+          <!-- Bottom fields -->
+          <div class="bottom-grid">
+            <div class="fbox">
+              <div class="fhead">Kaç Adet? <span class="info">i</span></div>
+              <div class="qtyline">
+                <button id="decCopies" class="qbtn" type="button">-</button>
+                <input id="copies" class="qinp" type="number" min="1" value="1" />
+                <button id="incCopies" class="qbtn" type="button">+</button>
+              </div>
+            </div>
+
+            <div class="fbox">
+              <div class="fhead">Sayfa Sayısı <span class="info">i</span></div>
+              <input id="pages" class="qinp" type="number" min="1" value="1" readonly disabled />
+            </div>
+
+            <div class="fbox">
+              <div class="fhead">Sayfa Ücreti <span class="info">i</span></div>
+              <div class="money">
+                <input id="pageUnit" class="qinp" type="text" value="₺0,00" readonly />
+                <span class="tl">₺</span>
+              </div>
+            </div>
+
+            <div class="fbox">
+              <div class="fhead">Dosya Ücreti <span class="info">i</span></div>
+              <div class="money">
+                <input id="fileFee" class="qinp" type="text" value="₺0,00" readonly />
+                <span class="tl">₺</span>
+              </div>
+            </div>
+          </div>
+
+          <button id="addToCart" class="bigbtn" type="button" disabled>🛒 SEPETE EKLE</button>
+
+          <div class="totalbox">
+            <div class="tlabel">Toplam tutar</div>
+            <div class="tvalue" id="calcTotal">₺0,00</div>
+          </div>
+
+          <div id="status" class="muted"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Cart -->
+      <aside class="card pad">
+        <div class="card-title">Sepet</div>
+        <div id="cart" class="cart empty">
+          <div class="empty-ico">🧾</div>
+          <div class="empty-title">Sepet boş</div>
+          <div class="empty-sub">Dosya eklemek için soldan yükle.</div>
+        </div>
+
+        <div class="totals">
+          <div class="trow">
+            <span>Ara Toplam</span><b id="subtotal">₺0.00</b>
+          </div>
+          <div class="trow">
+            <span>Kargo</span><b id="shipping">₺0.00</b>
+          </div>
+          <div class="trow grand">
+            <span>Ödenecek Tutar</span><b id="grand">₺0.00</b>
+          </div>
+        </div>
+
+        <div class="row">
+          <button id="clearCart" class="btn" type="button">Sepeti Temizle</button>
+          <button id="checkout" class="btn primary" type="button">Sipariş Oluştur</button>
+        </div>
+
+        <!-- Preview (N-up) -->
+        <div id="cartPreview" class="previewbox" aria-label="Önizleme"></div>
+
+        <div class="hint">Sipariş oluşturunca WhatsApp’a yönlendirilirsin. Dekont gönderince ben baskıya alırım.</div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+
+    <section id="reviews" class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2>Müşteri Yorumları</h2>
+          <p>Gerçek kullanıcı deneyimleri, tek satır akış.</p>
+        </div>
+
+        <div class="marquee">
+          <div class="track" id="workTrack">
+            <!-- JS will clone for seamless scroll -->
+            <div class="reviewcard">
+              <div class="rstars">★★★★★</div>
+              <div class="rtext">“Çok hızlı bastılar, WhatsApp’tan anında yardımcı oldular.”</div>
+              <div class="rname">Ayşe K.</div>
+            </div>
+            <div class="reviewcard">
+              <div class="rstars">★★★★★</div>
+              <div class="rtext">“Fiyat hesaplama net, sipariş süreci kolay. Teşekkürler!”</div>
+              <div class="rname">Mehmet T.</div>
+            </div>
+            <div class="reviewcard">
+              <div class="rstars">★★★★★</div>
+              <div class="rtext">“Kargo sorunsuz geldi. Baskı kalitesi çok iyi.”</div>
+              <div class="rname">Elif S.</div>
+            </div>
+            <div class="reviewcard">
+              <div class="rstars">★★★★★</div>
+              <div class="rtext">“Acil baskı gerekiyordu, aynı gün teslim aldım.”</div>
+              <div class="rname">Can B.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+<footer class="footer">
+      <div class="container footer-inner">
+        <div>© <span id="year"></span> SentezCopy</div>
+        <div class="muted">Bu site baskıyı otomatik yapmaz. Sipariş ve hesap içindir.</div>
+      </div>
+    </footer>
+  </main>
+  <a class="wa-float" href="https://wa.me/9050650866639?text=Merhaba%20SentezCopy%20i%C3%A7in%20yard%C4%B1m%20almak%20istiyorum." target="_blank" rel="noopener" aria-label="WhatsApp ile iletişim">
+    <span class="wa-ico" aria-hidden="true">💬</span>
+    <span class="wa-txt">WhatsApp</span>
+  </a>
+
+
+  <!-- Checkout Modal -->
+  <div id="modal" class="modal" hidden>
+    <div class="modal-backdrop" data-close="1"></div>
+    <div class="modal-card">
+      <div class="modal-head">
+        <div class="modal-title">Sipariş Oluştur</div>
+        <button class="iconbtn" data-close="1" aria-label="Kapat">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="grid2">
+          <div>
+            <label>Ad Soyad</label>
+            <input id="cName" placeholder="Örn: Emre Y." />
+          </div>
+          <div>
+            <label>Telefon</label>
+            <input id="cPhone" placeholder="05xx..." />
+          </div>
+        </div>
+
+        <label>Not</label>
+        <textarea id="cNote" rows="2" placeholder="Örn: Kenar boşluğu bırakma, acil vb."></textarea>
+
+        <div class="invoice">
+          <label class="check">
+            <input id="invReq" type="checkbox" />
+            <span>Fatura istiyorum</span>
+          </label>
+
+          <div id="invFields" class="inv-fields" hidden>
+            <div class="seg">
+              <button class="segbtn active" data-invtype="individual" type="button">Bireysel</button>
+              <button class="segbtn" data-invtype="corporate" type="button">Kurumsal</button>
+            </div>
+
+            <div id="invIndividual" class="grid2">
+              <div>
+                <label>TC Kimlik No</label>
+                <input id="tcNo" maxlength="11" placeholder="11 hane" />
+              </div>
+              <div>
+                <label>İl / İlçe</label>
+                <input id="invCity" placeholder="İl" />
+              </div>
+            </div>
+
+            <div id="invCorporate" class="grid2" hidden>
+              <div>
+                <label>Vergi No</label>
+                <input id="taxNo" maxlength="10" placeholder="10 hane" />
+              </div>
+              <div>
+                <label>Vergi Dairesi</label>
+                <input id="taxOffice" placeholder="Örn: Lüleburgaz" />
+              </div>
+              <div style="grid-column: 1 / -1;">
+                <label>Ünvan</label>
+                <input id="companyTitle" placeholder="Firma adı" />
+              </div>
+            </div>
+
+            <label>Adres</label>
+            <textarea id="invAddress" rows="2" placeholder="Açık adres"></textarea>
+          </div>
+        </div>
+
+        <div class="summary">
+          <div class="trow"><span>Ara Toplam</span><b id="mSub">₺0.00</b></div>
+          <div class="trow"><span>Kargo</span><b id="mShip">₺0.00</b></div>
+          <div class="trow grand"><span>Ödenecek Tutar</span><b id="mGrand">₺0.00</b></div>
+        </div>
+
+        <div id="checkoutMsg" class="muted"></div>
+      </div>
+
+      <div class="modal-foot">
+        <button class="btn ghost" data-close="1" type="button">Vazgeç</button>
+        <button id="confirmOrder" class="btn primary" type="button">Siparişi Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Tracking Modal -->
+  <div id="trackModal" class="modal" hidden>
+    <div class="modal-backdrop" data-close="1"></div>
+    <div class="modal-card" style="max-width:520px; border:2px solid rgba(239,68,68,.35);">
+      <div class="modal-head">
+        <div class="modal-title">Sipariş Durumu Sorgula</div>
+        <button class="iconbtn" data-close="1" aria-label="Kapat">✕</button>
+      </div>
+      <div class="modal-body">
+        <label>Sipariş Takip Kodu (6 hane) <span class="muted small">(opsiyonel)</span></label>
+        <input id="tOrderId" maxlength="6" inputmode="numeric" placeholder="Örn: 123456" />
+        <label style="margin-top:10px;">Telefon <span class="muted small">(opsiyonel)</span></label>
+        <input id="tPhone" placeholder="05xx..." />
+        <div class="muted small" style="margin-top:8px;">✅ Sipariş kodu <b>veya</b> telefon yazman yeterli. (İkisi de olursa daha hızlı eşleşir.)</div>
+        <button id="trackSubmit" class="bigbtn" type="button" style="margin-top:12px; background: linear-gradient(180deg,#7c9a00 0%, #5e7a00 100%); box-shadow:none;">SORGULA</button>
+        <div id="trackMsg" class="track-out" style="margin-top:10px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Topbar Cart Modal (Admin panel tarzı) -->
+  <div id="cartTopModal" class="modal" hidden>
+    <div class="modal-backdrop" data-close="1"></div>
+    <div class="modal-card" style="max-width:720px;">
+      <div class="modal-head">
+        <div class="modal-title">Sepet</div>
+        <button class="iconbtn" data-close="1" aria-label="Kapat">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="cartTopList" class="cart mini" style="min-height:120px;"></div>
+        <div class="totals" style="margin-top:12px;">
+          <div class="trow"><span>Ara Toplam</span><b id="topSub">₺0.00</b></div>
+          <div class="trow"><span>Kargo</span><b id="topShip">₺0.00</b></div>
+          <div class="trow grand"><span>Ödenecek Tutar</span><b id="topGrand">₺0.00</b></div>
+        </div>
+        <div class="row" style="margin-top:14px;">
+          <button id="topGoCalc" class="btn" type="button">Sepeti Düzenle</button>
+          <button id="topGoCheckout" class="btn primary" type="button">Sipariş Oluştur</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide-out Price Drawer (right) -->
+  <button id="priceFab" class="price-fab" type="button" aria-label="Fotokopi ücret hesapla">FOTOKOPİ ÜCRET HESAPLA</button>
+  <div id="priceDrawer" class="drawer" hidden aria-hidden="true">
+    <div class="drawer-head">
+      <div>
+        <div class="drawer-title">Fotokopi Fiyat Hesaplama</div>
+        <div class="drawer-sub">Fiyat listesi admin panelden değişir.</div>
+      </div>
+      <button class="drawer-x" type="button" id="priceClose" aria-label="Kapat">✕</button>
+    </div>
+
+    <form id="quickCalc" class="qcalc" autocomplete="off">
+      <label class="qrow">
+        <span>Sayfa Sayısı</span>
+        <input id="qcPages" type="number" min="1" value="1" />
+      </label>
+
+      <div class="q2">
+        <label class="qrow">
+          <span>Kağıt Ölçüsü</span>
+          <select id="qcPaper">
+            <option value="A4" selected>A4</option>
+            <option value="A3">A3</option>
+            <option value="A5">A5</option>
+          </select>
+        </label>
+        <label class="qrow">
+          <span>Renk</span>
+          <select id="qcColor">
+            <option value="bw" selected>S/B</option>
+            <option value="color">Renkli</option>
+          </select>
+        </label>
+      </div>
+
+      <label class="qrow">
+        <span>Ürün</span>
+        <select id="qcPaperType">
+          <option value="80_1hamur" selected>80 gr 1. hamur</option>
+          <option value="240_1hamur">240 gr 1. hamur</option>
+          <option value="sticker_parlak">sticker parlak</option>
+          <option value="sticker_selefonlu">sticker parlak selefonlu</option>
+          <option value="vesikalik">vesikalık fotoğraf</option>
+          <option value="brosur">broşür</option>
+          <option value="sertifika_dokulu">sertifika dokulu</option>
+          <option value="laminasyon">laminasyon</option>
+        </select>
+      </label>
+
+      <label class="qrow">
+        <span>Baskı Şekli</span>
+        <select id="qcDuplex">
+          <option value="single" selected>Tek Yüz</option>
+          <option value="double">Çift Yüz</option>
+        </select>
+      </label>
+
+      <label class="qrow">
+        <span>Adet</span>
+        <input id="qcCopies" type="number" min="1" value="1" />
+      </label>
+
+      <button class="btn primary" type="submit" style="width:100%; margin-top:6px;">HESAPLA</button>
+
+      <div class="qout">
+        <div class="muted small">Toplam tutar</div>
+        <div id="qcTotal" class="qtotal">₺0,00</div>
+      </div>
+    </form>
+
+    <div class="drawer-sep"></div>
+    <div class="drawer-title" style="font-size:14px;">Fiyat Listesi (<span id="priceListSize">A4</span>)</div>
+    <div class="drawer-tablewrap">
+      <table class="drawer-table" id="priceTable">
+        <thead>
+          <tr><th>Ürün</th><th>S/B</th><th>Renkli</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="/mesafeli-satis">Mesafeli Satış Bilgilendirmesi</a>
+        <span class="dot">•</span>
+        <a href="/gizlilik">Gizlilik ve KVKK</a>
+        <span class="dot">•</span>
+        <a href="/teslimat-iade">Teslimat ve İade</a>
+      </div>
+      <div class="footer-note">© <span id="footerYear"></span> SentezCopy</div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('footerYear').textContent = new Date().getFullYear();
+  </script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

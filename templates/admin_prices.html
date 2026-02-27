@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin | Fiyatlar</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">S</div>
+        <div class="brand-text">
+          <div class="brand-title">Admin Panel</div>
+          <div class="brand-sub">Fiyatları düzenle</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a class="pill" href="/admin">Siparişler</a>
+        <a class="pill active" href="/admin/prices">Fiyatlar</a>
+        <a class="pill" href="/">Siteye dön</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>Fiyat Listesi</h2>
+        <p>A4, A5, A3 için ayrı birim fiyatları gir (TRY / yaprak). Site ve fiyat hesaplama otomatik güncellenir.</p>
+      </div>
+
+      <div class="card pad">
+        <div id="pmsg" class="muted" style="margin-bottom:10px;"></div>
+        <div class="tablewrap">
+          <table class="ptable" id="ptable">
+            <thead>
+              <tr>
+                <th>Ürün</th>
+                <th>A4 S/B (₺)</th>
+                <th>A4 Renkli (₺)</th>
+                <th>A5 S/B (₺)</th>
+                <th>A5 Renkli (₺)</th>
+                <th>A3 S/B (₺)</th>
+                <th>A3 Renkli (₺)</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="row" style="margin-top:12px;">
+          <button class="btn primary" id="psave" type="button">Kaydet</button>
+          <button class="btn ghost" id="pref" type="button">Yenile</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+<script>
+const $ = (s)=>document.querySelector(s);
+const tbody = $("#ptable tbody");
+const msg = $("#pmsg");
+
+function setMsg(t){ msg.textContent = t||""; }
+
+async function load(){
+  setMsg("Yükleniyor...");
+  const r = await fetch("/api/admin/pricerules");
+  const j = await r.json();
+  if(!j.ok){ setMsg("Hata"); return; }
+  const rules = j.rules || [];
+  tbody.innerHTML = rules.map(r=>`
+    <tr data-key="${r.key}">
+      <td><input class="inp" value="${(r.label||"").replace(/"/g,'&quot;')}" data-field="label" /></td>
+      <td><input class="inp" value="${Number(r.bw_a4||0).toFixed(2)}" data-field="bw_a4" /></td>
+      <td><input class="inp" value="${Number(r.color_a4||0).toFixed(2)}" data-field="color_a4" /></td>
+      <td><input class="inp" value="${Number(r.bw_a5||0).toFixed(2)}" data-field="bw_a5" /></td>
+      <td><input class="inp" value="${Number(r.color_a5||0).toFixed(2)}" data-field="color_a5" /></td>
+      <td><input class="inp" value="${Number(r.bw_a3||0).toFixed(2)}" data-field="bw_a3" /></td>
+      <td><input class="inp" value="${Number(r.color_a3||0).toFixed(2)}" data-field="color_a3" /></td>
+    </tr>
+  `).join("");
+  setMsg("Hazır ✅");
+}
+
+async function save(){
+  const rows = Array.from(tbody.querySelectorAll("tr"));
+  const rules = rows.map(tr=>{
+    const key = tr.dataset.key;
+    const get = (f)=> tr.querySelector(`[data-field="${f}"]`)?.value;
+    return {
+      key,
+      label: get("label"),
+      bw_a4: parseFloat(String(get("bw_a4")).replace(",",".")) || 0,
+      color_a4: parseFloat(String(get("color_a4")).replace(",",".")) || 0,
+      bw_a5: parseFloat(String(get("bw_a5")).replace(",",".")) || 0,
+      color_a5: parseFloat(String(get("color_a5")).replace(",",".")) || 0,
+      bw_a3: parseFloat(String(get("bw_a3")).replace(",",".")) || 0,
+      color_a3: parseFloat(String(get("color_a3")).replace(",",".")) || 0,
+    };
+  });
+  setMsg("Kaydediliyor...");
+  const r = await fetch("/api/admin/pricerules", {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify({rules})});
+  const j = await r.json();
+  if(j.ok){ setMsg("Kaydedildi ✅"); }
+  else { setMsg("Kaydedilemedi ❌"); }
+}
+
+$("#psave").addEventListener("click", save);
+$("#pref").addEventListener("click", load);
+load();
+</script>
+</body>
+</html>

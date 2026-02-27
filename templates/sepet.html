@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SentezCopy | Sepet</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="brand" href="/">SentezCopy</a>
+      <div class="topbar-actions">
+        <a class="pill" href="/">← Ana Sayfa</a>
+        <a class="pill" href="/admin">Admin</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>Sepet</h2>
+        <p>Dosyalarını kontrol et, bilgilerini gir, siparişi tamamla.</p>
+      </div>
+
+      <div class="card pad" id="sepetPage">
+        <div id="sepetList" class="cart" style="background:#fff;"></div>
+
+        <div class="invoice" style="margin-top:14px;">
+          <div class="grid2">
+            <div>
+              <label>Ad Soyad</label>
+              <input id="cName" placeholder="Örn: Emre Y." />
+            </div>
+            <div>
+              <label>Telefon</label>
+              <input id="cPhone" placeholder="05xx..." />
+            </div>
+          </div>
+
+          <label>Not</label>
+          <textarea id="cNote" rows="2" placeholder="Örn: Kenar boşluğu bırakma, acil vb."></textarea>
+
+          <label class="check" style="margin-top:10px;">
+            <input id="invReq" type="checkbox" />
+            <span>Fatura istiyorum</span>
+          </label>
+
+          <div id="invFields" class="inv-fields" hidden>
+            <div class="seg">
+              <button class="segbtn active" data-invtype="individual" type="button">Bireysel</button>
+              <button class="segbtn" data-invtype="corporate" type="button">Kurumsal</button>
+            </div>
+
+            <div id="invIndividual" class="grid2">
+              <div>
+                <label>TC Kimlik No</label>
+                <input id="tcNo" maxlength="11" placeholder="11 hane" />
+              </div>
+              <div>
+                <label>İl</label>
+                <input id="invCity" placeholder="İl" />
+              </div>
+            </div>
+
+            <div id="invCorporate" class="grid2" hidden>
+              <div>
+                <label>Vergi No</label>
+                <input id="taxNo" maxlength="10" placeholder="10 hane" />
+              </div>
+              <div>
+                <label>Vergi Dairesi</label>
+                <input id="taxOffice" placeholder="Örn: Lüleburgaz" />
+              </div>
+              <div style="grid-column: 1 / -1;">
+                <label>Ünvan</label>
+                <input id="companyTitle" placeholder="Firma adı" />
+              </div>
+            </div>
+
+            <label>Adres</label>
+            <textarea id="invAddress" rows="2" placeholder="Açık adres"></textarea>
+          </div>
+        </div>
+
+        <div class="summary" style="margin-top:14px;">
+          <div class="trow"><span>Ara Toplam</span><b id="mSub">₺0.00</b></div>
+          <div class="trow"><span>Kargo</span><b id="mShip">₺0.00</b></div>
+          <div class="trow grand"><span>Ödenecek Tutar</span><b id="mGrand">₺0.00</b></div>
+        </div>
+
+        <div id="checkoutMsg" class="muted" style="margin-top:10px;"></div>
+
+        <div class="row" style="margin-top:14px; justify-content:flex-end;">
+          <button id="confirmOrder" class="btn primary" type="button">SİPARİŞİ TAMAMLA</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="/mesafeli-satis">Mesafeli Satış Bilgilendirmesi</a>
+        <span class="dot">•</span>
+        <a href="/gizlilik">Gizlilik ve KVKK</a>
+        <span class="dot">•</span>
+        <a href="/teslimat-iade">Teslimat ve İade</a>
+      </div>
+      <div class="footer-note">© <span id="footerYear"></span> SentezCopy</div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('footerYear').textContent = new Date().getFullYear();
+  </script>
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

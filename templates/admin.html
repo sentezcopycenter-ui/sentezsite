@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin | SentezCopy</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body class="admin">
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">S</div>
+        <div class="brand-text">
+          <div class="brand-title">Admin Panel</div>
+          <div class="brand-sub">Öğlene kadar gelen siparişleri kontrol et</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a class="pill" href="/admin">Siparişler</a>
+        <a class="pill" href="/admin/prices">Fiyatlar</a>
+        <a class="pill" href="/">Siteye dön</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <div class="section-head">
+        <h2>Siparişler</h2>
+        <p>Durumu değiştir, kargo takip numarası gir, dosyaları indir.</p>
+      </div>
+
+      <div class="admin-grid">
+        <div class="card pad">
+          <div class="row">
+            <select id="filter">
+              <option value="">Tümü</option>
+              <option value="awaiting_receipt">Dekont Bekleniyor</option>
+              <option value="ready_to_print">Baskıya Hazır</option>
+              <option value="printed">Basıldı</option>
+              <option value="shipped">Kargolandı</option>
+              <option value="completed">Tamamlandı</option>
+              <option value="cancelled">İptal</option>
+            </select>
+            <button id="refresh" class="btn ghost" type="button">Yenile</button>
+          </div>
+
+          <div id="orderList" class="olist muted">Yükleniyor...</div>
+        </div>
+
+        <div class="card pad">
+          <div class="card-title">Detay</div>
+          <div id="detail" class="muted">Soldan bir sipariş seç.</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+<script>
+const $ = (s)=>document.querySelector(s);
+const orderList = $("#orderList");
+const detail = $("#detail");
+const filter = $("#filter");
+
+const STATUS_LABELS = {
+  awaiting_receipt: "Dekont Bekleniyor",
+  ready_to_print: "Baskıya Hazır",
+  printed: "Basıldı",
+  shipped: "Kargolandı",
+  completed: "Tamamlandı",
+  cancelled: "İptal"
+};
+
+function stLabel(v){ return STATUS_LABELS[v] || v || "-"; }
+
+function fmt(v){ return (Number(v)||0).toFixed(2).replace(".", ","); }
+
+async function loadOrders(){
+  orderList.textContent = "Yükleniyor...";
+  const q = filter.value ? `?status=${encodeURIComponent(filter.value)}` : "";
+  const r = await fetch(`/api/admin/orders${q}`);
+  const j = await r.json();
+  if(!j.ok){ orderList.textContent="Hata"; return; }
+
+  if(!j.orders.length){ orderList.innerHTML = '<div class="muted">Sipariş yok.</div>'; return; }
+
+  orderList.innerHTML = j.orders.map(o => `
+    <button class="ocard" data-id="${o.id}">
+      <div class="otop">
+        <b>#${o.order_code || o.id}</b>
+        <span class="st">${stLabel(o.status)}</span>
+      </div>
+      <div class="muted small">${o.customer_name||"-"} • ${o.customer_phone||"-"}</div>
+      <div class="ototal">₺${fmt(o.grand_total_try)}</div>
+    </button>
+  `).join("");
+
+  orderList.querySelectorAll(".ocard").forEach(b=>{
+    b.addEventListener("click", ()=>loadDetail(b.dataset.id));
+  });
+}
+
+async function loadDetail(id){
+  detail.innerHTML = "Yükleniyor...";
+  const r = await fetch(`/api/admin/order/${id}`);
+  const j = await r.json();
+  if(!j.ok){ detail.textContent="Hata"; return; }
+  const o = j.order;
+  const files = j.files || [];
+  detail.innerHTML = `
+    <div class="dhead">
+      <div><b>Sipariş #${o.order_code || o.id}</b></div>
+      <div class="muted small">${stLabel(o.status)}</div>
+    </div>
+
+    <div class="summary" style="margin-top:10px;">
+      <div class="trow"><span>Ara Toplam</span><b>₺${fmt(o.subtotal_try)}</b></div>
+      <div class="trow"><span>Kargo</span><b>₺${fmt(o.shipping_try)}</b></div>
+      <div class="trow grand"><span>Ödenecek</span><b>₺${fmt(o.grand_total_try)}</b></div>
+    </div>
+
+    <div class="muted small" style="margin-top:10px;">
+      <div><b>Müşteri:</b> ${o.customer_name||"-"} (${o.customer_phone||"-"})</div>
+      <div><b>Not:</b> ${o.note||"-"}</div>
+      <div><b>Fatura:</b> ${o.invoice_requested ? "Evet" : "Hayır"}</div>
+    </div>
+
+    <hr class="sep" />
+
+    <div class="grid2">
+      <div>
+        <label>Durum</label>
+        <select id="st">
+          ${["awaiting_receipt","ready_to_print","printed","shipped","completed","cancelled"].map(s=>`<option value="${s}" ${s===o.status?"selected":""}>${stLabel(s)}</option>`).join("")}
+        </select>
+      </div>
+      <div>
+        <label>Kargo Firması</label>
+        <input id="cargo" value="${o.cargo_company||""}" placeholder="Örn: Yurtiçi" />
+      </div>
+      <div style="grid-column: 1 / -1;">
+        <label>Takip No</label>
+        <input id="trk" value="${o.tracking_no||""}" placeholder="Kargo takip numarası" />
+      </div>
+    </div>
+
+    <div class="row" style="margin-top:10px;">
+      <button class="btn primary" id="save">Kaydet</button>
+      <button class="btn ghost" id="wa">WhatsApp Mesajı</button>
+    </div>
+
+    <hr class="sep" />
+
+    <div>
+      <div class="card-title">Dosyalar</div>
+      ${files.length ? files.map(f=>`
+        <div class="fileline">
+          <div>
+            <b>${f.filename}</b>
+            <div class="muted small">${f.paper} • ${f.color} • ${f.duplex} • yaprak:${f.sheets} • adet:${f.copies}</div>
+          </div>
+          <a class="btn ghost smallbtn" href="/api/file/${f.id}/download">İndir</a>
+        </div>
+      `).join("") : '<div class="muted">Dosya yok.</div>'}
+    </div>
+  `;
+
+  $("#save").addEventListener("click", async ()=>{
+    const payload = {
+      status: $("#st").value,
+      cargo_company: $("#cargo").value,
+      tracking_no: $("#trk").value
+    };
+    const rr = await fetch(`/api/admin/order/${id}/update`, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(payload)});
+    const jj = await rr.json();
+    if(jj.ok){
+      await loadOrders();
+      await loadDetail(id);
+    } else {
+      alert("Kaydedilemedi");
+    }
+  });
+
+  $("#wa").addEventListener("click", ()=>{
+    const txt = encodeURIComponent(`Merhaba, Sipariş #${o.order_code || o.id} için dekontu iletebilir misiniz? Ödenecek tutar: ₺${fmt(o.grand_total_try)}`);
+    window.open(`https://wa.me/?text=${txt}`, "_blank");
+  });
+}
+
+$("#refresh").addEventListener("click", loadOrders);
+filter.addEventListener("change", loadOrders);
+loadOrders();
+</script>
+</body>
+</html>
