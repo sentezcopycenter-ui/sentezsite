@@ -16,6 +16,58 @@ const state = {
   invType: "individual"
 };
 
+// Ürün bazlı kısıtlar: bazı ürünlerde sadece Tek Yüz + 1x1 (Kağıt başına sayfa) aktif olmalı
+const FIXED_SINGLE_PRODUCTS = new Set([
+  "240_1hamur",
+  "sticker_parlak",
+  "sticker_selefonlu",
+  "vesikalik",
+  "sertifika_dokulu",
+  "laminasyon",
+]);
+
+function isFixedSingleProduct(paper_type){
+  return FIXED_SINGLE_PRODUCTS.has(String(paper_type||""));
+}
+
+function setActiveButton(selector, matchValue, datasetKey){
+  const btns = $$(selector);
+  btns.forEach(b=> b.classList.remove("active"));
+  const target = btns.find(b=> String(b.dataset[datasetKey]) === String(matchValue));
+  if(target) target.classList.add("active");
+}
+
+function applyMainConstraints(){
+  const fixed = isFixedSingleProduct(state.opts.paper_type);
+
+  // Duplex buttons (main order area)
+  const duplexBtns = $$('[data-duplex]');
+  if(duplexBtns.length){
+    duplexBtns.forEach(b=>{
+      b.disabled = fixed; // komple kilitle
+      if(!fixed) b.disabled = false;
+    });
+    if(fixed){
+      state.opts.duplex = "single";
+      setActiveButton('[data-duplex]', "single", "duplex");
+    }
+  }
+
+  // N-up buttons (Kağıt başına sayfa)
+  const nupBtns = $$('[data-nup]');
+  if(nupBtns.length){
+    nupBtns.forEach(b=>{
+      b.disabled = fixed;
+      if(!fixed) b.disabled = false;
+    });
+    if(fixed){
+      state.opts.nup = 1;
+      setActiveButton('[data-nup]', "1", "nup");
+    }
+  }
+}
+
+
 function fmtTRY(v){
   const n = Number(v) || 0;
   return "₺" + n.toFixed(2).replace(".", ",");
@@ -260,6 +312,40 @@ function wireQuickCalc(){
   const copiesEl = $("#qcCopies");
   const out = $("#qcTotal");
 
+  // Kağıt başına sayfa (N-up) butonları
+  const nupRow = $("#qcNupRow");
+  let qcNup = 1;
+
+  function setNup(n){
+    qcNup = Math.max(1, Number(n||1));
+    if(nupRow){
+      nupRow.querySelectorAll("button").forEach(b=> b.classList.remove("active"));
+      const target = nupRow.querySelector(`button[data-qc-nup="${qcNup}"]`);
+      target && target.classList.add("active");
+    }
+  }
+
+  function applyQuickConstraints(){
+    const paper_type = String(typeEl?.value || "80_1hamur");
+    const fixed = isFixedSingleProduct(paper_type);
+
+    if(fixed){
+      // zorunlu: tek yüz + 1x1
+      duplexEl && (duplexEl.value = "single");
+      setNup(1);
+
+      if(duplexEl) duplexEl.disabled = true;
+      if(nupRow){
+        nupRow.querySelectorAll("button").forEach(b=> b.disabled = true);
+      }
+    }else{
+      if(duplexEl) duplexEl.disabled = false;
+      if(nupRow){
+        nupRow.querySelectorAll("button").forEach(b=> b.disabled = false);
+      }
+    }
+  }
+
   function compute(){
     const pages = Math.max(1, Number(pagesEl?.value || 1));
     const copies = Math.max(1, Number(copiesEl?.value || 1));
@@ -267,17 +353,37 @@ function wireQuickCalc(){
     const paper = String(paperEl?.value || "A4").toUpperCase();
     const paper_type = String(typeEl?.value || "80_1hamur");
     const duplex = String(duplexEl?.value || "single");
+    const nup = Math.max(1, Number(qcNup||1));
 
-    const billable = duplex === "double" ? Math.ceil(pages/2) : pages;
-    const total = billable * unitPrice({paper, color, paper_type}) * copies;
-    out && (out.textContent = fmtTRY(total));
+    const { fee } = calcFileFee({ paper, color, paper_type, duplex, pages, copies, nup });
+    out && (out.textContent = fmtTRY(fee));
+  }
+
+  // nup click
+  if(nupRow){
+    nupRow.querySelectorAll("button").forEach(b=>{
+      b.addEventListener("click", (e)=>{
+        e.preventDefault();
+        if(b.disabled) return;
+        setNup(b.dataset.qcNup);
+        compute();
+      });
+    });
   }
 
   form.addEventListener("submit", (e)=>{ e.preventDefault(); compute(); });
+
   [pagesEl, paperEl, colorEl, typeEl, duplexEl, copiesEl]
     .filter(Boolean)
-    .forEach(el=> el.addEventListener("input", ()=>{ compute(); renderPriceTable(); }));
+    .forEach(el=> el.addEventListener("input", ()=>{
+      applyQuickConstraints();
+      compute();
+      renderPriceTable();
+    }));
 
+  // ilk kurulum
+  setNup(1);
+  applyQuickConstraints();
   compute();
   renderPriceTable();
 }
@@ -294,6 +400,8 @@ function wirePaperSelect(){
 function wireSegButtons(){
   $$(".segbtn").forEach(b=>{
     b.addEventListener("click", ()=>{
+      if(b.closest('#quickCalc')) return; // quick calc kendi handler'ını kullanır
+      if(b.disabled) return;
       const group = b.closest(".seg") || b.closest(".tile-row") || b.closest(".tile-grid") || b.closest(".mini-row");
       if(group){
         group.querySelectorAll(".segbtn").forEach(x=>x.classList.remove("active"));
@@ -305,6 +413,7 @@ function wireSegButtons(){
       if(b.dataset.nup) state.opts.nup = Math.max(1, Number(b.dataset.nup||1));
       // kalite kaldırıldı (tek fiyat mantığı)
       if(b.dataset.ptype) state.opts.paper_type = b.dataset.ptype;
+      applyMainConstraints();
       updateCalcUI && updateCalcUI();
       if(b.dataset.invtype){
         state.invType = b.dataset.invtype;
@@ -974,6 +1083,7 @@ function init(){
   initReveal();
   initHowto();
   wireSmooth();
+  applyMainConstraints();
   updateCalcUI();
   renderCart();
   renderTotals();
